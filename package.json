@@ -50,7 +50,8 @@
   },
   "scripts": {
     "build": "eslint assets/js/*.js && parcel build assets/html/index.html --dist-dir dist",
-    "dev": "parcel build assets/html/index.html --no-optimize --dist-dir dist"
+    "dev": "parcel build assets/html/index.html --no-optimize --dist-dir dist",
+    "start": "node main.js"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
