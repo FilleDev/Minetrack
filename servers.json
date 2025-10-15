@@ -1,12 +1,87 @@
 [
 	{
-		"name": "Hypixel",
-		"ip": "mc.hypixel.net",
+		"name": "90gQopen",
+		"ip": "90gqopen.se",
 		"type": "PC"
 	},
 	{
-		"name": "CubeCraft",
-		"ip": "play.cubecraft.net",
+		"name": "AgoniaMC",
+		"ip": "agoniamc.eu",
+		"type": "PC"
+	},
+	{
+		"name": "NorthSMP",
+		"ip": "northsmp.eu",
+		"type": "PC"
+	},
+	{
+		"name": "Cybermine",
+		"ip": "cybermine.se",
+		"type": "PC"
+	},
+	{
+		"name": "Montoria SMP",
+		"ip": "montoria.se",
+		"type": "PC"
+	},
+	{
+		"name": "Mucraft",
+		"ip": "spela.mucraft.se",
+		"type": "PC"
+	},
+	{
+		"name": "Bonkcaft",
+		"ip": "bonkcaft.se",
+		"type": "PC"
+	},
+	{
+		"name": "Kottcraft",
+		"ip": "kottcraft.se",
+		"type": "PC"
+	},
+	{
+		"name": "Synix",
+		"ip": "synix.nu",
+		"type": "PC"
+	},
+	{
+		"name": "Granskogen",
+		"ip": "spela.granskogen.nu",
+		"type": "PC"
+	},
+	{
+		"name": "TheDeQ",
+		"ip": "mc.thedeq.com",
+		"type": "PC"
+	},
+	{
+		"name": "Emopia",
+		"ip": "emopia.se",
+		"type": "PC"
+	},
+	{
+		"name": "PandaMC",
+		"ip": "pandamc.se",
+		"type": "PC"
+	},
+	{
+		"name": "Burken ",
+		"ip": "dnsburk.com",
+		"type": "PC"
+	},
+	{
+		"name": "Safe Gaming SMP",
+		"ip": "akion.se",
+		"type": "PC"
+	},
+	{
+		"name": "BlueLagoon",
+		"ip": "bluelagoon.se",
+		"type": "PC"
+	},
+	{
+		"name": "SGC Trusted",
+		"ip": "trusted.sgc.se",
 		"type": "PC"
 	}
 ]
