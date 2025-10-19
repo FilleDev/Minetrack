@@ -101,7 +101,12 @@ export function formatMinecraftVersions (versions, knownVersions) {
 export function formatTimestampSeconds (secs) {
   const date = new Date(0)
   date.setUTCSeconds(secs)
-  return date.toLocaleTimeString()
+  return date.toLocaleTimeString('en-GB', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
 }
 
 export function formatDate (secs) {

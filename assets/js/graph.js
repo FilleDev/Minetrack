@@ -261,12 +261,27 @@ export class GraphDisplayManager {
       ],
       axes: [
         {
-          font: '14px "Open Sans", sans-serif',
+          font: '13px "Open Sans", sans-serif',
           stroke: '#FFF',
           grid: {
             show: false
           },
-          space: 60
+          space: 60,
+          values: (_, ticks) => ticks.map((timestamp, index) => {
+            const date = new Date(timestamp * 1000)
+            const formattedTime = date.toLocaleTimeString('en-GB', {
+              hour12: false,
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+
+            if (index === 0) {
+              const formattedDate = date.toLocaleDateString('en-GB')
+              return `${formattedTime}\n${formattedDate}`
+            }
+
+            return formattedTime
+          })
         },
         {
           font: '14px "Open Sans", sans-serif',
