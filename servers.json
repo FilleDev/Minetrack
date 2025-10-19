@@ -83,5 +83,20 @@
 		"name": "SGC Trusted",
 		"ip": "trusted.sgc.se",
 		"type": "PC"
+	},
+	{
+		"name": "SwedecrafT",
+		"ip": "45.143.196.93:25612",
+		"type": "PC"
+	},
+	{
+		"name": "Dobbys Events",
+		"ip": "dobbysevents.se",
+		"type": "PC"
+	},
+	{
+		"name": "Gruvriket",
+		"ip": "mc.gruvriket.se",
+		"type": "PC"
 	}
 ]
