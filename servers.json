@@ -99,5 +99,10 @@
 		"name": "Gruvriket",
 		"ip": "mc.gruvriket.se",
 		"type": "PC"
+	},
+	{
+		"name": "Patrik Widell",
+		"ip": "mc.patrikwidell.se",
+		"type": "PC"
 	}
 ]
