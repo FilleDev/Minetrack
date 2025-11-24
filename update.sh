@@ -17,29 +17,16 @@ cd "$SCRIPT_DIR" || {
     exit 1
 }
 
-# Fetch latest changes from remote
-#log "Fetching latest changes..."
-git fetch origin
-
-# Get current and remote commit hashes
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/$BRANCH)
-
-# Check if update is needed
-if [ "$LOCAL" = "$REMOTE" ]; then
+# Pull latest changes and check if anything was actually updated
+if git pull --ff-only origin "$BRANCH" | grep -q 'Already up to date.'; then
 #    log "Already up to date."
     exit 0
 fi
-
 log "New changes detected. Updating..."
 
 # Stop the PM2 process
 log "Stopping PM2 app: $PM2_APP_NAME..."
 pm2 stop "$PM2_APP_NAME"
-
-# Pull latest changes
-log "Pulling changes..."
-git pull origin "$BRANCH"
 
 # Install dependencies
 log "Running npm install..."
