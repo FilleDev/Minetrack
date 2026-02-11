@@ -85,7 +85,9 @@ export class SocketManager {
 
           // Bulk add playerCounts into graph during #updateHistoryGraph
           if (payload.updateHistoryGraph) {
-            this._app.graphDisplayManager.addGraphPoint(payload.timestamp, Object.values(payload.updates).map(update => update.playerCount))
+            // Map updates to playerCounts, preserving server ID indices
+            const playerCounts = payload.updates.map(update => update ? update.playerCount : null)
+            this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
 
             // Run redraw tasks after handling bulk updates
             this._app.graphDisplayManager.redraw()
