@@ -104,5 +104,10 @@
     "name": "Melodifesivalen",
     "ip": "mc.melodifestivalen.se",
     "type": "PC"
+  },
+  {
+    "name": "Sweden SMP",
+    "ip": "swedensmp.net",
+    "type": "PC"
   }
 ]
