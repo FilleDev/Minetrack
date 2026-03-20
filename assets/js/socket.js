@@ -70,12 +70,11 @@ export class SocketManager {
           break
 
         case 'updateServers': {
-          for (let serverId = 0; serverId < payload.updates.length; serverId++) {
+          for (const [serverName, serverUpdate] of Object.entries(payload.updates)) {
             // The backend may send "update" events prior to receiving all "add" events
             // A server has only been added once it's ServerRegistration is defined
             // Checking undefined protects from this race condition
-            const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
-            const serverUpdate = payload.updates[serverId]
+            const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
 
             if (serverRegistration) {
               serverRegistration.handlePing(serverUpdate, payload.timestamp)
@@ -85,8 +84,12 @@ export class SocketManager {
 
           // Bulk add playerCounts into graph during #updateHistoryGraph
           if (payload.updateHistoryGraph) {
-            // Map updates to playerCounts, preserving server ID indices
-            const playerCounts = payload.updates.map(update => update ? update.playerCount : null)
+            // Map player counts in the same order as the server registrations (filtered list order)
+            const playerCounts = this._app.serverRegistry.getServerRegistrations()
+              .map(reg => {
+                const update = payload.updates[reg.data.name]
+                return update ? update.playerCount : null
+              })
             this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
 
             // Run redraw tasks after handling bulk updates
