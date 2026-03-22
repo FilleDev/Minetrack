@@ -109,5 +109,10 @@
     "name": "Sweden SMP",
     "ip": "swedensmp.net",
     "type": "PC"
+  },
+  {
+    "name": "Svea SMP",
+    "ip": "spela.sveasmp.se",
+    "type": "PC"
   }
 ]
