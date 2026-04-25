@@ -119,5 +119,10 @@
     "name": "Obsidianland",
     "ip": "obsidianland.eu",
     "type": "PC"
+  },
+  {
+    "name": "SweCraft SMP",
+    "ip": "swecraft.online",
+    "type": "PC"
   }
 ]
