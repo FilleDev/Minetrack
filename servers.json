@@ -114,5 +114,10 @@
     "name": "Svea SMP",
     "ip": "spela.sveasmp.se",
     "type": "PC"
+  },
+  {
+    "name": "Obsidianland",
+    "ip": "obsidianland.eu",
+    "type": "PC"
   }
 ]
