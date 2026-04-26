@@ -18,6 +18,7 @@ export class GraphDisplayManager {
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
     this._showOnlyFavorites = false
+    this._hoveredSeriesIndex = -1
   }
 
   addGraphPoint (timestamp, playerCounts) {
@@ -200,6 +201,7 @@ export class GraphDisplayManager {
 
     const series = this._app.serverRegistry.getServerRegistrations().map(serverRegistration => {
       return {
+        baseStroke: serverRegistration.data.color,
         stroke: serverRegistration.data.color,
         width: 2,
         value: (_, raw) => `${formatNumber(raw)} Players`,
@@ -220,6 +222,7 @@ export class GraphDisplayManager {
         uPlotTooltipPlugin((pos, idx) => {
           if (pos) {
             const closestSeriesIndex = this.getClosestPlotSeriesIndex(idx)
+            this.setHoveredSeriesIndex(closestSeriesIndex)
 
             const text = this._app.serverRegistry.getServerRegistrations()
               .filter(serverRegistration => serverRegistration.isVisible)
@@ -246,6 +249,7 @@ export class GraphDisplayManager {
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
+            this.setHoveredSeriesIndex(-1)
             this._app.tooltip.hide()
           }
         })
@@ -319,6 +323,10 @@ export class GraphDisplayManager {
   }
 
   redraw = () => {
+    if (!this._plotInstance) {
+      return
+    }
+
     // Use drawing as a hint to update settings
     // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
     this.updateLocalStorage()
@@ -326,6 +334,43 @@ export class GraphDisplayManager {
     // Copy application state into the series data used by uPlot
     for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
       this._plotInstance.series[serverRegistration.getGraphDataIndex()].show = serverRegistration.isVisible
+    }
+
+    this._plotInstance.redraw()
+  }
+
+  handleServerColorUpdate (serverRegistration) {
+    if (!this._plotInstance) {
+      return
+    }
+
+    const plotSeries = this._plotInstance.series[serverRegistration.getGraphDataIndex()]
+    plotSeries.baseStroke = serverRegistration.data.color
+    this.applySeriesStyling()
+  }
+
+  setHoveredSeriesIndex (seriesIndex) {
+    if (this._hoveredSeriesIndex !== seriesIndex) {
+      this._hoveredSeriesIndex = seriesIndex
+      this.applySeriesStyling()
+    }
+  }
+
+  applySeriesStyling () {
+    if (!this._plotInstance) {
+      return
+    }
+
+    for (let i = 1; i < this._plotInstance.series.length; i++) {
+      const series = this._plotInstance.series[i]
+
+      if (this._hoveredSeriesIndex > 0) {
+        series.stroke = i === this._hoveredSeriesIndex ? series.baseStroke : hexToRgba(series.baseStroke, 0.28)
+        series.width = i === this._hoveredSeriesIndex ? 4 : 2
+      } else {
+        series.stroke = series.baseStroke
+        series.width = 2
+      }
     }
 
     this._plotInstance.redraw()
@@ -464,6 +509,7 @@ export class GraphDisplayManager {
     this._graphTimestamps = []
     this._graphData = []
     this._hasLoadedSettings = false
+    this._hoveredSeriesIndex = -1
 
     // Fire #clearTimeout if the timeout is currently defined
     if (this._resizeRequestTimeout) {
@@ -478,4 +524,13 @@ export class GraphDisplayManager {
 
     document.getElementById('settings-toggle').style.display = 'none'
   }
+}
+
+function hexToRgba (hexColor, alpha) {
+  const normalizedColor = hexColor.replace('#', '')
+  const r = parseInt(normalizedColor.slice(0, 2), 16)
+  const g = parseInt(normalizedColor.slice(2, 4), 16)
+  const b = parseInt(normalizedColor.slice(4, 6), 16)
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }

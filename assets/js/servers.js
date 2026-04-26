@@ -115,7 +115,7 @@ export class ServerRegistration {
       series: [
         {},
         {
-          stroke: '#E9E581',
+          stroke: this.data.color,
           width: 2,
           value: (_, raw) => `${formatNumber(raw)} Players`,
           spanGaps: true,
@@ -159,6 +159,26 @@ export class ServerRegistration {
         show: false
       }
     }, this._graphData, document.getElementById(`chart_${this.serverId}`))
+  }
+
+  handleColorUpdate (color) {
+    if (!color || this.data.color === color) {
+      return false
+    }
+
+    this.data.color = color
+
+    const colorSwatchElement = document.getElementById(`graph-color-swatch_${this.serverId}`)
+    if (colorSwatchElement) {
+      colorSwatchElement.style.background = color
+    }
+
+    if (this._plotInstance) {
+      this._plotInstance.series[1].stroke = color
+      this._plotInstance.redraw()
+    }
+
+    return true
   }
 
   handlePing (payload, timestamp) {

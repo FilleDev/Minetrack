@@ -31,6 +31,10 @@ export class PercentageBar {
         div.style.left = leftPaddingPixels
       }
 
+      if (div.style.background !== serverRegistration.data.color) {
+        div.style.background = serverRegistration.data.color
+      }
+
       leftPadding += width
     }
   }

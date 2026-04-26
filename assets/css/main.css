@@ -360,6 +360,16 @@ footer a:hover {
   margin: 15px auto 0 auto;
 }
 
+.graph-color-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
 /* Basic elements */
 .button {
   background: var(--color-blue);

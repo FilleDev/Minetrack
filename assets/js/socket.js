@@ -70,6 +70,8 @@ export class SocketManager {
           break
 
         case 'updateServers': {
+          let hasColorUpdate = false
+
           for (const [serverName, serverUpdate] of Object.entries(payload.updates)) {
             // The backend may send "update" events prior to receiving all "add" events
             // A server has only been added once it's ServerRegistration is defined
@@ -77,6 +79,11 @@ export class SocketManager {
             const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
 
             if (serverRegistration) {
+              if (serverUpdate.color && serverRegistration.handleColorUpdate(serverUpdate.color)) {
+                this._app.graphDisplayManager.handleServerColorUpdate(serverRegistration)
+                hasColorUpdate = true
+              }
+
               serverRegistration.handlePing(serverUpdate, payload.timestamp)
               serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
             }
@@ -93,6 +100,8 @@ export class SocketManager {
             this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
 
             // Run redraw tasks after handling bulk updates
+            this._app.graphDisplayManager.redraw()
+          } else if (hasColorUpdate) {
             this._app.graphDisplayManager.redraw()
           }
 
@@ -116,6 +125,7 @@ export class SocketManager {
               const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
 
               controlsHTML += `<td><label>
+                <span class="graph-color-swatch" id="graph-color-swatch_${serverRegistration.serverId}" style="background: ${serverRegistration.data.color}"></span>
                 <input type="checkbox" class="graph-control" minetrack-server-id="${serverRegistration.serverId}" ${serverRegistration.isVisible ? 'checked' : ''}>
                 ${serverName}
                 </label></td>`
