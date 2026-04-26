@@ -43,6 +43,38 @@ export class Caption {
   }
 }
 
+export class CopyToast {
+  constructor () {
+    this._div = document.getElementById('copy-toast')
+  }
+
+  show (targetElement, text) {
+    this._div.innerText = text
+    this._div.style.display = 'block'
+    this._div.style.top = '0'
+    this._div.style.left = '0'
+
+    const targetBounds = targetElement.getBoundingClientRect()
+    const toastWidth = this._div.offsetWidth
+    const top = window.scrollY + targetBounds.bottom + 8
+    const idealLeft = window.scrollX + targetBounds.left + ((targetBounds.width - toastWidth) / 2)
+    const maxLeft = window.scrollX + window.innerWidth - toastWidth - 12
+    const left = Math.max(window.scrollX + 12, Math.min(idealLeft, maxLeft))
+
+    this._div.style.top = `${top}px`
+    this._div.style.left = `${left}px`
+
+    if (this._timeoutId) {
+      clearTimeout(this._timeoutId)
+    }
+
+    this._timeoutId = setTimeout(() => {
+      this._div.style.display = 'none'
+      this._timeoutId = undefined
+    }, 1600)
+  }
+}
+
 // Minecraft Java Edition default server port: 25565
 // Minecraft Bedrock Edition default server port: 19132
 const MINECRAFT_DEFAULT_PORTS = [25565, 19132]

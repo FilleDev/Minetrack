@@ -4,7 +4,7 @@ import { SortController } from './sort'
 import { GraphDisplayManager } from './graph'
 import { PercentageBar } from './percbar'
 import { FavoritesManager } from './favorites'
-import { Tooltip, Caption, formatNumber } from './util'
+import { Tooltip, Caption, CopyToast, formatNumber } from './util'
 
 export class App {
   publicConfig
@@ -12,6 +12,7 @@ export class App {
   constructor () {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
+    this.copyToast = new CopyToast()
     this.serverRegistry = new ServerRegistry(this)
     this.socketManager = new SocketManager(this)
     this.sortController = new SortController(this)
