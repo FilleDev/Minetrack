@@ -43,107 +43,132 @@ export class SocketManager {
     }
 
     this._webSocket.onmessage = (message) => {
-      const payload = JSON.parse(message.data)
+      try {
+        const payload = JSON.parse(message.data)
 
-      switch (payload.message) {
-        case 'init':
-          this._app.setPublicConfig(payload.config)
+        switch (payload.message) {
+          case 'init':
+            this._app.setPublicConfig(payload.config)
 
-          // Display the main page component
-          // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
-          this._app.setPageReady(true)
+            // Display the main page component
+            // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
+            this._app.setPageReady(true)
 
-          // Allow the graphDisplayManager to control whether or not the historical graph is loaded
-          // Defer to isGraphVisible from the publicConfig to understand if the frontend will ever receive a graph payload
-          if (this._app.publicConfig.isGraphVisible) {
-            this.sendHistoryGraphRequest()
-          }
-
-          payload.servers.forEach((serverPayload, serverId) => {
-            this._app.addServer(serverId, serverPayload, payload.timestampPoints)
-          })
-
-          // Init payload contains all data needed to render the page
-          // Alert the app it is ready
-          this._app.handleSyncComplete()
-
-          break
-
-        case 'updateServers': {
-          let hasColorUpdate = false
-
-          for (const [serverName, serverUpdate] of Object.entries(payload.updates)) {
-            // The backend may send "update" events prior to receiving all "add" events
-            // A server has only been added once it's ServerRegistration is defined
-            // Checking undefined protects from this race condition
-            const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
-
-            if (serverRegistration) {
-              if (serverUpdate.color && serverRegistration.handleColorUpdate(serverUpdate.color)) {
-                this._app.graphDisplayManager.handleServerColorUpdate(serverRegistration)
-                hasColorUpdate = true
-              }
-
-              serverRegistration.handlePing(serverUpdate, payload.timestamp)
-              serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
+            // Allow the graphDisplayManager to control whether or not the historical graph is loaded
+            // Defer to isGraphVisible from the publicConfig to understand if the frontend will ever receive a graph payload
+            if (this._app.publicConfig.isGraphVisible) {
+              this.sendHistoryGraphRequest()
             }
-          }
 
-          // Bulk add playerCounts into graph during #updateHistoryGraph
-          if (payload.updateHistoryGraph) {
-            // Map player counts in the same order as the server registrations (filtered list order)
-            const playerCounts = this._app.serverRegistry.getServerRegistrations()
-              .map(reg => {
-                const update = payload.updates[reg.data.name]
-                return update ? update.playerCount : null
-              })
-            this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
-
-            // Run redraw tasks after handling bulk updates
-            this._app.graphDisplayManager.redraw()
-          } else if (hasColorUpdate) {
-            this._app.graphDisplayManager.redraw()
-          }
-
-          this._app.percentageBar.redraw()
-          this._app.updateGlobalStats()
-
-          break
-        }
-
-        case 'historyGraph': {
-          this._app.graphDisplayManager.buildPlotInstance(payload.timestamps, payload.graphData)
-
-          // Build checkbox elements for graph controls
-          let lastRowCounter = 0
-          let controlsHTML = ''
-
-          this._app.serverRegistry.getServerRegistrations()
-            .map(serverRegistration => serverRegistration.data.name)
-            .sort()
-            .forEach(serverName => {
-              const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
-
-              controlsHTML += `<td><label>
-                <span class="graph-color-swatch" id="graph-color-swatch_${serverRegistration.serverId}" style="background: ${serverRegistration.data.color}"></span>
-                <input type="checkbox" class="graph-control" minetrack-server-id="${serverRegistration.serverId}" ${serverRegistration.isVisible ? 'checked' : ''}>
-                ${serverName}
-                </label></td>`
-
-              // Occasionally break table rows using a magic number
-              if (++lastRowCounter % 6 === 0) {
-                controlsHTML += '</tr><tr>'
-              }
+            payload.servers.forEach((serverPayload, serverId) => {
+              this._app.addServer(serverId, serverPayload, payload.timestampPoints)
             })
 
-          // Apply generated HTML and show controls
-          document.getElementById('big-graph-checkboxes').innerHTML = `<table><tr>${controlsHTML}</tr></table>`
-          document.getElementById('big-graph-controls').style.display = 'block'
+            // Init payload contains all data needed to render the page
+            // Alert the app it is ready
+            this._app.handleSyncComplete()
 
-          // Bind click event for updating graph data
-          this._app.graphDisplayManager.initEventListeners()
-          break
+            break
+
+          case 'updateServers': {
+            let hasColorUpdate = false
+
+            for (const [serverName, serverUpdate] of Object.entries(payload.updates)) {
+              // The backend may send "update" events prior to receiving all "add" events
+              // A server has only been added once it's ServerRegistration is defined
+              // Checking undefined protects from this race condition
+              const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
+
+              if (serverRegistration) {
+                try {
+                  if (serverUpdate.color && serverRegistration.handleColorUpdate(serverUpdate.color)) {
+                    this._app.graphDisplayManager.handleServerColorUpdate(serverRegistration)
+                    hasColorUpdate = true
+                  }
+
+                  serverRegistration.handlePing(serverUpdate, payload.timestamp)
+                  serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
+                } catch (err) {
+                  console.error(`Failed to apply server update for ${serverName}`, err)
+                }
+              }
+            }
+
+            // Bulk add playerCounts into graph during #updateHistoryGraph
+            if (payload.updateHistoryGraph) {
+              // Map player counts in the same order as the server registrations (filtered list order)
+              const playerCounts = this._app.serverRegistry.getServerRegistrations()
+                .map(reg => {
+                  const update = payload.updates[reg.data.name]
+                  return update ? update.playerCount : null
+                })
+              try {
+                this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
+
+                // Run redraw tasks after handling bulk updates
+                this._app.graphDisplayManager.redraw()
+              } catch (err) {
+                console.error('Failed to update main graph', err)
+              }
+            } else if (hasColorUpdate) {
+              try {
+                this._app.graphDisplayManager.redraw()
+              } catch (err) {
+                console.error('Failed to redraw main graph after color update', err)
+              }
+            }
+
+            try {
+              this._app.percentageBar.redraw()
+            } catch (err) {
+              console.error('Failed to redraw percentage bar', err)
+            }
+
+            try {
+              this._app.updateGlobalStats()
+            } catch (err) {
+              console.error('Failed to update global stats', err)
+            }
+
+            break
+          }
+
+          case 'historyGraph': {
+            this._app.graphDisplayManager.buildPlotInstance(payload.timestamps, payload.graphData)
+
+            // Build checkbox elements for graph controls
+            let lastRowCounter = 0
+            let controlsHTML = ''
+
+            this._app.serverRegistry.getServerRegistrations()
+              .map(serverRegistration => serverRegistration.data.name)
+              .sort()
+              .forEach(serverName => {
+                const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
+
+                controlsHTML += `<td><label>
+                  <span class="graph-color-swatch" id="graph-color-swatch_${serverRegistration.serverId}" style="background: ${serverRegistration.data.color}"></span>
+                  <input type="checkbox" class="graph-control" minetrack-server-id="${serverRegistration.serverId}" ${serverRegistration.isVisible ? 'checked' : ''}>
+                  ${serverName}
+                  </label></td>`
+
+                // Occasionally break table rows using a magic number
+                if (++lastRowCounter % 6 === 0) {
+                  controlsHTML += '</tr><tr>'
+                }
+              })
+
+            // Apply generated HTML and show controls
+            document.getElementById('big-graph-checkboxes').innerHTML = `<table><tr>${controlsHTML}</tr></table>`
+            document.getElementById('big-graph-controls').style.display = 'block'
+
+            // Bind click event for updating graph data
+            this._app.graphDisplayManager.initEventListeners()
+            break
+          }
         }
+      } catch (err) {
+        console.error('Failed to process WebSocket message', err, message.data)
       }
     }
   }

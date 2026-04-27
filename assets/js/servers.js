@@ -211,7 +211,17 @@ export class ServerRegistration {
     }
 
     // Redraw the plot instance
-    this._plotInstance.setData(this._graphData)
+    try {
+      this._plotInstance.setData(this._graphData)
+    } catch (err) {
+      console.error(`Failed to update small graph for ${this.data.name}, rebuilding`, err)
+
+      if (this._plotInstance) {
+        this._plotInstance.destroy()
+      }
+
+      this.buildPlotInstance()
+    }
   }
 
   updateServerRankIndex (rankIndex) {

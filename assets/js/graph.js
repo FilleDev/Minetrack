@@ -30,33 +30,47 @@ export class GraphDisplayManager {
       return
     }
 
-    // Calculate isZoomed before mutating graphData otherwise the indexed values
-    // are out of date and will always fail when compared to plotScaleX.min/max
-    const plotScaleX = this._plotInstance.scales.x
-    const isZoomed = plotScaleX.min > this._graphTimestamps[0] || plotScaleX.max < this._graphTimestamps[this._graphTimestamps.length - 1]
+    try {
+      // Calculate isZoomed before mutating graphData otherwise the indexed values
+      // are out of date and will always fail when compared to plotScaleX.min/max
+      const plotScaleX = this._plotInstance.scales.x
+      const zoomMin = plotScaleX.min
+      const zoomMax = plotScaleX.max
+      const isZoomed = plotScaleX.min > this._graphTimestamps[0] || plotScaleX.max < this._graphTimestamps[this._graphTimestamps.length - 1]
 
-    this._graphTimestamps.push(timestamp)
+      this._graphTimestamps.push(timestamp)
 
-    for (let i = 0; i < playerCounts.length; i++) {
-      this._graphData[i].push(playerCounts[i])
-    }
-
-    // Trim all data arrays to only the relevant portion
-    // This keeps it in sync with backend data structures
-    const graphMaxLength = this._app.publicConfig.graphMaxLength
-
-    if (this._graphTimestamps.length > graphMaxLength) {
-      this._graphTimestamps.splice(0, this._graphTimestamps.length - graphMaxLength)
-    }
-
-    for (const series of this._graphData) {
-      if (series.length > graphMaxLength) {
-        series.splice(0, series.length - graphMaxLength)
+      for (let i = 0; i < playerCounts.length; i++) {
+        this._graphData[i].push(playerCounts[i])
       }
-    }
 
-    // Avoid redrawing the plot when zoomed
-    this._plotInstance.setData(this.getGraphData(), !isZoomed)
+      // Trim all data arrays to only the relevant portion
+      // This keeps it in sync with backend data structures
+      const graphMaxLength = this._app.publicConfig.graphMaxLength
+
+      if (this._graphTimestamps.length > graphMaxLength) {
+        this._graphTimestamps.splice(0, this._graphTimestamps.length - graphMaxLength)
+      }
+
+      for (const series of this._graphData) {
+        if (series.length > graphMaxLength) {
+          series.splice(0, series.length - graphMaxLength)
+        }
+      }
+
+      // Avoid redrawing the plot when zoomed
+      this._plotInstance.setData(this.getGraphData(), !isZoomed)
+
+      if (isZoomed) {
+        this._plotInstance.setScale('x', {
+          min: zoomMin,
+          max: zoomMax
+        })
+      }
+    } catch (err) {
+      console.error('Failed to update main graph, rebuilding', err)
+      this.rebuildPlotInstance()
+    }
   }
 
   loadLocalStorage () {
@@ -334,6 +348,19 @@ export class GraphDisplayManager {
 
     // Show the settings-toggle element
     document.getElementById('settings-toggle').style.display = 'inline-block'
+  }
+
+  rebuildPlotInstance () {
+    const timestamps = this._graphTimestamps.slice()
+    const data = this._graphData.map(series => series.slice())
+
+    if (this._plotInstance) {
+      this._plotInstance.destroy()
+      this._plotInstance = undefined
+    }
+
+    this.buildPlotInstance(timestamps, data)
+    this.redraw()
   }
 
   redraw = () => {
