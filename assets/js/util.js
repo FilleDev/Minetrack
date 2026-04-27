@@ -54,6 +54,10 @@ export class CopyToast {
     this._div.style.top = '0'
     this._div.style.left = '0'
 
+    if (!targetElement) {
+      return
+    }
+
     const targetBounds = targetElement.getBoundingClientRect()
     const toastWidth = this._div.offsetWidth
     const top = window.scrollY + targetBounds.bottom + 8

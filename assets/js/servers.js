@@ -115,7 +115,10 @@ export class ServerRegistration {
       series: [
         {},
         {
-          stroke: this.data.color,
+          displayStroke: this.data.color,
+          stroke () {
+            return this.displayStroke
+          },
           width: 2,
           value: (_, raw) => `${formatNumber(raw)} Players`,
           spanGaps: true,
@@ -174,7 +177,7 @@ export class ServerRegistration {
     }
 
     if (this._plotInstance) {
-      this._plotInstance.series[1].stroke = color
+      this._plotInstance.series[1].displayStroke = color
       this._plotInstance.redraw()
     }
 
@@ -345,10 +348,11 @@ export class ServerRegistration {
   }
 
   handleServerClick = async (event) => {
+    const targetElement = event.currentTarget
     const serverAddress = formatMinecraftServerAddress(this.data.ip, this.data.port)
     const isCopied = await copyTextToClipboard(serverAddress)
 
-    this._app.copyToast.show(event.currentTarget, isCopied ? `Copied ${serverAddress}` : `Could not copy ${serverAddress}`)
+    this._app.copyToast.show(targetElement, isCopied ? `Copied ${serverAddress}` : `Could not copy ${serverAddress}`)
   }
 }
 

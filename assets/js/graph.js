@@ -144,26 +144,30 @@ export class GraphDisplayManager {
     }
   }
 
-  getClosestPlotSeriesIndex (idx) {
+  getClosestPlotSeriesIndex (idx, plotInstance = this._plotInstance) {
+    if (!plotInstance) {
+      return -1
+    }
+
     let closestSeriesIndex = -1
     let closestSeriesDist = Number.MAX_VALUE
 
-    const plotHeight = this._plotInstance.bbox.height / devicePixelRatio
+    const plotHeight = plotInstance.bbox.height / devicePixelRatio
 
-    for (let i = 1; i < this._plotInstance.series.length; i++) {
-      const series = this._plotInstance.series[i]
+    for (let i = 1; i < plotInstance.series.length; i++) {
+      const series = plotInstance.series[i]
 
       if (!series.show) {
         continue
       }
 
-      const point = this._plotInstance.data[i][idx]
+      const point = plotInstance.data[i][idx]
 
       if (typeof point === 'number') {
-        const scale = this._plotInstance.scales[series.scale]
+        const scale = plotInstance.scales[series.scale]
         const posY = (1 - ((point - scale.min) / (scale.max - scale.min))) * plotHeight
 
-        const dist = Math.abs(posY - this._plotInstance.cursor.top)
+        const dist = Math.abs(posY - plotInstance.cursor.top)
 
         if (dist < closestSeriesDist) {
           closestSeriesIndex = i
@@ -202,7 +206,10 @@ export class GraphDisplayManager {
     const series = this._app.serverRegistry.getServerRegistrations().map(serverRegistration => {
       return {
         baseStroke: serverRegistration.data.color,
-        stroke: serverRegistration.data.color,
+        displayStroke: serverRegistration.data.color,
+        stroke () {
+          return this.displayStroke
+        },
         width: 2,
         value: (_, raw) => `${formatNumber(raw)} Players`,
         show: serverRegistration.isVisible,
@@ -219,19 +226,26 @@ export class GraphDisplayManager {
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
-        uPlotTooltipPlugin((pos, idx) => {
+        uPlotTooltipPlugin((pos, idx, plotInstance) => {
           if (pos) {
-            const closestSeriesIndex = this.getClosestPlotSeriesIndex(idx)
+            const closestSeriesIndex = this.getClosestPlotSeriesIndex(idx, plotInstance)
             this.setHoveredSeriesIndex(closestSeriesIndex)
 
             const text = this._app.serverRegistry.getServerRegistrations()
               .filter(serverRegistration => serverRegistration.isVisible)
               .sort((a, b) => {
+                const pointA = this.getGraphDataPoint(a.serverId, idx)
+                const pointB = this.getGraphDataPoint(b.serverId, idx)
+
+                if (pointA !== pointB) {
+                  return (pointB || 0) - (pointA || 0)
+                }
+
                 if (a.isFavorite !== b.isFavorite) {
                   return a.isFavorite ? -1 : 1
-                } else {
-                  return a.data.name.localeCompare(b.data.name)
                 }
+
+                return a.data.name.localeCompare(b.data.name)
               })
               .map(serverRegistration => {
                 const point = this.getGraphDataPoint(serverRegistration.serverId, idx)
@@ -346,6 +360,7 @@ export class GraphDisplayManager {
 
     const plotSeries = this._plotInstance.series[serverRegistration.getGraphDataIndex()]
     plotSeries.baseStroke = serverRegistration.data.color
+    plotSeries.displayStroke = serverRegistration.data.color
     this.applySeriesStyling()
   }
 
@@ -365,10 +380,10 @@ export class GraphDisplayManager {
       const series = this._plotInstance.series[i]
 
       if (this._hoveredSeriesIndex > 0) {
-        series.stroke = i === this._hoveredSeriesIndex ? series.baseStroke : hexToRgba(series.baseStroke, 0.28)
+        series.displayStroke = i === this._hoveredSeriesIndex ? series.baseStroke : hexToRgba(series.baseStroke, 0.28)
         series.width = i === this._hoveredSeriesIndex ? 4 : 2
       } else {
-        series.stroke = series.baseStroke
+        series.displayStroke = series.baseStroke
         series.width = 2
       }
     }

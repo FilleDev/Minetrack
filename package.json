@@ -3,15 +3,14 @@
   "version": "5.6.1",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "dependencies": {
-    "finalhandler": "^1.1.2",
+    "finalhandler": "^2.1.1",
     "mcpe-ping-fixed": "0.0.3",
     "mcping-js": "^1.4.1",
-    "request": "2.88.2",
-    "serve-static": "^1.16.2",
-    "sqlite3": "^5.1.5",
-    "uplot": "1.0.11",
-    "winston": "^2.4.4",
-    "ws": "^7.5.10"
+    "serve-static": "^2.2.1",
+    "sqlite3": "^6.0.1",
+    "uplot": "1.6.32",
+    "winston": "^3.19.0",
+    "ws": "^8.20.0"
   },
   "repository": {
     "type": "git",
@@ -27,7 +26,7 @@
   },
   "homepage": "https://github.com/Cryptkeeper/Minetrack#README",
   "engines": {
-    "node": ">=12.4.0"
+    "node": ">=20.17.0"
   },
   "targets": {
     "main": {
@@ -38,15 +37,14 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
-    "@babel/plugin-proposal-class-properties": "^7.10.1",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.21.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "parcel": "^2.8.0"
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-class-properties": "^7.28.6",
+    "eslint": "^8.57.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.6.0",
+    "parcel": "^2.16.4"
   },
   "scripts": {
     "build": "eslint assets/js/*.js && parcel build assets/html/index.html --dist-dir dist",
@@ -54,7 +52,7 @@
     "start": "node main.js"
   },
   "optionalDependencies": {
-    "bufferutil": "^4.0.1",
-    "utf-8-validate": "^5.0.2"
+    "bufferutil": "^4.1.0",
+    "utf-8-validate": "^6.0.6"
   }
 }
