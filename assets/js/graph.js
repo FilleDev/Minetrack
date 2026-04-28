@@ -36,7 +36,9 @@ export class GraphDisplayManager {
       const plotScaleX = this._plotInstance.scales.x
       const zoomMin = plotScaleX.min
       const zoomMax = plotScaleX.max
-      const isZoomed = plotScaleX.min > this._graphTimestamps[0] || plotScaleX.max < this._graphTimestamps[this._graphTimestamps.length - 1]
+      const previousMinTimestamp = this._graphTimestamps[0]
+      const previousMaxTimestamp = this._graphTimestamps[this._graphTimestamps.length - 1]
+      const isZoomed = plotScaleX.min > previousMinTimestamp || plotScaleX.max < previousMaxTimestamp
 
       this._graphTimestamps.push(timestamp)
 
@@ -58,15 +60,19 @@ export class GraphDisplayManager {
         }
       }
 
-      // Avoid redrawing the plot when zoomed
-      this._plotInstance.setData(this.getGraphData(), !isZoomed)
+      const currentMinTimestamp = this._graphTimestamps[0]
+      const currentMaxTimestamp = this._graphTimestamps[this._graphTimestamps.length - 1]
 
-      if (isZoomed) {
-        this._plotInstance.setScale('x', {
-          min: zoomMin,
-          max: zoomMax
-        })
-      }
+      this._plotInstance.setData(this.getGraphData(), false)
+      this._plotInstance.setScale('x', isZoomed
+        ? {
+            min: Math.max(zoomMin, currentMinTimestamp),
+            max: Math.min(zoomMax, currentMaxTimestamp)
+          }
+        : {
+            min: currentMinTimestamp,
+            max: currentMaxTimestamp
+          })
     } catch (err) {
       console.error('Failed to update main graph, rebuilding', err)
       this.rebuildPlotInstance()

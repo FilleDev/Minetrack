@@ -78,9 +78,11 @@ export class ServerRegistration {
     ]
   }
 
-  buildPlotInstance () {
-    const tickCount = 4
+  getScaledGraphRange () {
+    return RelativeScale.scale(this._graphData[1], 4)
+  }
 
+  buildPlotInstance () {
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
@@ -143,7 +145,7 @@ export class ServerRegistration {
             width: 1
           },
           split: () => {
-            const { scaledMin, scaledMax, scale } = RelativeScale.scale(this._graphData[1], tickCount)
+            const { scaledMin, scaledMax, scale } = this.getScaledGraphRange()
             const ticks = RelativeScale.generateTicks(scaledMin, scaledMax, scale)
             return ticks
           }
@@ -153,7 +155,7 @@ export class ServerRegistration {
         y: {
           auto: false,
           range: () => {
-            const { scaledMin, scaledMax } = RelativeScale.scale(this._graphData[1], tickCount)
+            const { scaledMin, scaledMax } = this.getScaledGraphRange()
             return [scaledMin, scaledMax]
           }
         }
@@ -213,6 +215,11 @@ export class ServerRegistration {
     // Redraw the plot instance
     try {
       this._plotInstance.setData(this._graphData)
+      const { scaledMin, scaledMax } = this.getScaledGraphRange()
+      this._plotInstance.setScale('y', {
+        min: scaledMin,
+        max: scaledMax
+      })
     } catch (err) {
       console.error(`Failed to update small graph for ${this.data.name}, rebuilding`, err)
 
