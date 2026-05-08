@@ -124,5 +124,15 @@
     "name": "SweCraft SMP",
     "ip": "swecraft.online",
     "type": "PC"
+  },
+  {
+    "name": "Swedish SMP",
+    "ip": "swedishsmp.net",
+    "type": "PC"
+  },
+  {
+    "name": "Moobster SMP",
+    "ip": "moobster.se",
+    "type": "PC"
   }
 ]
