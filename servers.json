@@ -75,12 +75,6 @@
     "type": "PC"
   },
   {
-    "name": "SwedecrafT",
-    "ip": "scraft.minecraft.party",
-    "port": "25612",
-    "type": "PC"
-  },
-  {
     "name": "Dobbys Events",
     "ip": "dobbysevents.se",
     "type": "PC"
@@ -93,11 +87,6 @@
   {
     "name": "Patrik Widell",
     "ip": "mc.patrikwidell.se",
-    "type": "PC"
-  },
-  {
-    "name": "SwedenMC",
-    "ip": "spela.swedenmc.se",
     "type": "PC"
   },
   {
@@ -133,6 +122,11 @@
   {
     "name": "Moobster SMP",
     "ip": "moobster.se",
+    "type": "PC"
+  },
+  {
+    "name": "Nordic SMP",
+    "ip": "smp.nordic-server.se",
     "type": "PC"
   }
 ]
