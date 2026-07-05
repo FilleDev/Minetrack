@@ -195,6 +195,10 @@
 		{
 			"name": "26.1.2",
 			"protocolId": 775
+		},
+		{
+			"name": "26.2",
+			"protocolId": 776
 		}
 	]
 }
