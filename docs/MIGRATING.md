@@ -10,10 +10,9 @@ Minetrack 5 is the first of several upcoming updates designed to address several
 6. Copy your existing `config.json` and `servers.json` files into the new directory.
 7. Build your copy of `dist/`.
 8. If you have previously configured any `faviconOverride` values within `config.json`, you will need to move them to the updated structure. Create a new directory within your Minetrack folder named `favicons/`.
-9. If you have previously configured any `minecraft.json` values not included in the new `minecraft_versions.json` file, you will need to update their structure copy them to the new file.
-10. Move your custom favicon images into the directory. 
-11. Open `servers.json` in your favorite editor.
-12. For any server which you have a custom favicon, set the "favicon" field like so:
+9. Move your custom favicon images into the directory.
+10. Open `servers.json` in your favorite editor.
+11. For any server which you have a custom favicon, set the "favicon" field like so:
 
 ```
 {
@@ -27,7 +26,7 @@ Minetrack 5 is the first of several upcoming updates designed to address several
 
 Do **NOT** include the `favicons/` path in the value. For example a file, "my-favicon.png" in the directory `favicons/` should be configured using simply "my-favicon.png".
 
-You may delete the `faviconOverride`, `routes` and `versions` portions of your `config.json`, they are no longer supported features. You may delete the `minecraft.json` file, it has been merged into `minecraft_versions.json`.
+You may delete the `faviconOverride`, `routes` and `versions` portions of your `config.json`, they are no longer supported features. You may delete the `minecraft.json` file; Java Edition protocol versions are loaded from Misode's mcmeta version data at startup.
 
 You're done!
 

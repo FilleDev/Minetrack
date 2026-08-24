@@ -133,6 +133,10 @@ export class SocketManager {
             break
           }
 
+          case 'minecraftVersions':
+            this._app.publicConfig.minecraftVersions = payload.minecraftVersions
+            break
+
           case 'historyGraph': {
             this._app.graphDisplayManager.buildPlotInstance(payload.timestamps, payload.graphData)
 
