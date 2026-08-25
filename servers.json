@@ -113,5 +113,10 @@
     "name": "Moobster SMP",
     "ip": "moobster.se",
     "type": "PC"
+  },
+  {
+    "name": "GameZone MC",
+    "ip": "play.gamezonemc.se",
+    "type": "PC"
   }
 ]
