@@ -118,5 +118,10 @@
     "name": "GameZone MC",
     "ip": "play.gamezonemc.se",
     "type": "PC"
+  },
+  {
+    "name": "LanternMC",
+    "ip": "play.lanternmc.se",
+    "type": "PC"
   }
 ]
