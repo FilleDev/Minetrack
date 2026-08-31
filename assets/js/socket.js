@@ -106,7 +106,7 @@ export class SocketManager {
                 this._app.graphDisplayManager.addGraphPoint(payload.timestamp, playerCounts)
 
                 // Run redraw tasks after handling bulk updates
-                this._app.graphDisplayManager.redraw()
+                this._app.graphDisplayManager.redraw(false)
               } catch (err) {
                 console.error('Failed to update main graph', err)
               }

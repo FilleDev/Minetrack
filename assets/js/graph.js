@@ -10,6 +10,9 @@ import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
 const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers'
 const SHOW_FAVORITES_STORAGE_KEY = 'minetrack_show_favorites'
 
+const GRAPH_TICK_COUNT = 10
+const GRAPH_MAX_FACTOR = 4
+
 export class GraphDisplayManager {
   constructor (app) {
     this._app = app
@@ -73,6 +76,12 @@ export class GraphDisplayManager {
             min: currentMinTimestamp,
             max: currentMaxTimestamp
           })
+
+      const { scaledMin, scaledMax } = RelativeScale.scaleMatrix(this.getVisibleGraphData(), GRAPH_TICK_COUNT, GRAPH_MAX_FACTOR)
+      this._plotInstance.setScale('y', {
+        min: scaledMin,
+        max: scaledMax
+      })
     } catch (err) {
       console.error('Failed to update main graph, rebuilding', err)
       this.rebuildPlotInstance()
@@ -240,9 +249,6 @@ export class GraphDisplayManager {
       }
     })
 
-    const tickCount = 10
-    const maxFactor = 4
-
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
@@ -331,7 +337,7 @@ export class GraphDisplayManager {
           },
           split: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const { scaledMax, scale } = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
+            const { scaledMax, scale } = RelativeScale.scaleMatrix(visibleGraphData, GRAPH_TICK_COUNT, GRAPH_MAX_FACTOR)
             const ticks = RelativeScale.generateTicks(0, scaledMax, scale)
             return ticks
           }
@@ -342,7 +348,7 @@ export class GraphDisplayManager {
           auto: false,
           range: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const { scaledMin, scaledMax } = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
+            const { scaledMin, scaledMax } = RelativeScale.scaleMatrix(visibleGraphData, GRAPH_TICK_COUNT, GRAPH_MAX_FACTOR)
             return [scaledMin, scaledMax]
           }
         }
@@ -369,7 +375,7 @@ export class GraphDisplayManager {
     this.redraw()
   }
 
-  redraw = () => {
+  redraw = (forceRescale = true) => {
     if (!this._plotInstance) {
       return
     }
@@ -383,7 +389,7 @@ export class GraphDisplayManager {
       this._plotInstance.series[serverRegistration.getGraphDataIndex()].show = serverRegistration.isVisible
     }
 
-    this._plotInstance.redraw()
+    this._plotInstance.redraw(forceRescale)
   }
 
   handleServerColorUpdate (serverRegistration) {

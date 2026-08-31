@@ -29,7 +29,7 @@
     "node": ">=20.17.0"
   },
   "targets": {
-    "main": {
+    "app": {
       "engines": {
         "browsers": "defaults"
       },
