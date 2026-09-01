@@ -3,6 +3,8 @@ node_modules/
 
 # minetrack
 minetrack.log
+update.log
+update.lock
 
 # minetrack/sqlite3
 database.sql
