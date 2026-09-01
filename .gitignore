@@ -5,6 +5,7 @@ node_modules/
 minetrack.log
 update.log
 update.lock
+config.json
 
 # minetrack/sqlite3
 database.sql

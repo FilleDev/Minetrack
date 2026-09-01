@@ -27,8 +27,13 @@ fi
 
 BEFORE_HASH="$(git rev-parse HEAD)"
 
-if ! git pull --ff-only origin "$BRANCH" >> "$LOG_FILE" 2>&1; then
-    log "ERROR: git pull failed, not restarting the app"
+if ! git fetch origin "$BRANCH" >> "$LOG_FILE" 2>&1; then
+    log "ERROR: git fetch failed, not restarting the app"
+    exit 1
+fi
+
+if ! git reset --hard "origin/$BRANCH" >> "$LOG_FILE" 2>&1; then
+    log "ERROR: git reset --hard failed, not restarting the app"
     exit 1
 fi
 
@@ -38,6 +43,11 @@ if [ "$BEFORE_HASH" = "$AFTER_HASH" ]; then
     exit 0
 fi
 log "New changes detected. Updating..."
+
+if [ ! -f config.json ] && [ -f config.example.json ]; then
+    log "config.json not found, creating it from config.example.json"
+    cp config.example.json config.json
+fi
 
 # Stop the PM2 process
 log "Stopping PM2 app: $PM2_APP_NAME..."
