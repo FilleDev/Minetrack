@@ -32,17 +32,17 @@ if ! git fetch origin "$BRANCH" >> "$LOG_FILE" 2>&1; then
     exit 1
 fi
 
-if ! git reset --hard "origin/$BRANCH" >> "$LOG_FILE" 2>&1; then
+REMOTE_HASH="$(git rev-parse FETCH_HEAD)"
+
+if [ "$BEFORE_HASH" = "$REMOTE_HASH" ]; then
+    exit 0
+fi
+log "New changes detected (local=$BEFORE_HASH remote=$REMOTE_HASH). Updating..."
+
+if ! git reset --hard FETCH_HEAD >> "$LOG_FILE" 2>&1; then
     log "ERROR: git reset --hard failed, not restarting the app"
     exit 1
 fi
-
-AFTER_HASH="$(git rev-parse HEAD)"
-
-if [ "$BEFORE_HASH" = "$AFTER_HASH" ]; then
-    exit 0
-fi
-log "New changes detected. Updating..."
 
 if [ ! -f config.json ] && [ -f config.example.json ]; then
     log "config.json not found, creating it from config.example.json"
