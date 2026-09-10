@@ -6,7 +6,7 @@
   },
   {
     "name": "North Community",
-    "ip": "northcommunity.org",
+    "ip": "northcommunity.net",
     "type": "PC"
   },
   {
@@ -70,16 +70,6 @@
     "type": "PC"
   },
   {
-    "name": "Dobbys Events",
-    "ip": "dobbysevents.se",
-    "type": "PC"
-  },
-  {
-    "name": "Gruvriket",
-    "ip": "mc.gruvriket.se",
-    "type": "PC"
-  },
-  {
     "name": "Patrik Widell",
     "ip": "mc.patrikwidell.se",
     "type": "PC"
@@ -102,11 +92,6 @@
   {
     "name": "Obsidianland",
     "ip": "obsidianland.eu",
-    "type": "PC"
-  },
-  {
-    "name": "Moobster SMP",
-    "ip": "moobster.se",
     "type": "PC"
   },
   {
