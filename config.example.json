@@ -15,5 +15,6 @@
 	"logToDatabase": true,
 	"graphDuration": 259200000,
 	"serverGraphDuration": 180000,
-	"skipSrvTimeout": 60000
+	"skipSrvTimeout": 60000,
+	"serverProposalWebhookUrl": ""
 }

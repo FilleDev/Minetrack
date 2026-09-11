@@ -54,6 +54,8 @@ For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
 Database logging is disabled by default. You can enable it in ```config.json``` by setting ```logToDatabase``` to true.
 This requires sqlite3 drivers to be installed.
 
+To enable the optional server-proposal form, set `serverProposalWebhookUrl` to a Discord webhook URL in `config.json`.
+
 ## Docker
 Minetrack can be built and run with Docker from this repository in several ways:
 

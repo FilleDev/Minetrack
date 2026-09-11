@@ -1,8 +1,10 @@
 import { App } from './app'
+import { initServerProposalForm } from './proposals'
 
 const app = new App()
 
 document.addEventListener('DOMContentLoaded', () => {
+  initServerProposalForm()
   app.init()
 
   window.addEventListener('resize', function () {
