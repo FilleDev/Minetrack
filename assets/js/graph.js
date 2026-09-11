@@ -154,8 +154,8 @@ export class GraphDisplayManager {
 
   getPlotSize () {
     return {
-      width: Math.max(window.innerWidth, 800) * 0.9,
-      height: 400
+      width: window.innerWidth * 0.9,
+      height: window.innerWidth <= 820 ? 220 : 400
     }
   }
 

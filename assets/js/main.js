@@ -10,5 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Delegate to GraphDisplayManager which can check if the resize is necessary
     app.graphDisplayManager.requestResize()
+
+    // Per-server graphs are cheap to resize and have no existing debounce mechanism
+    app.serverRegistry.resizeAll()
   }, false)
 }, false)

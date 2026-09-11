@@ -41,6 +41,10 @@ export class ServerRegistry {
 
   getServerRegistrations = () => Object.values(this._registeredServers)
 
+  resizeAll () {
+    this.getServerRegistrations().forEach(serverRegistration => serverRegistration.resize())
+  }
+
   reset () {
     this._serverIdsByName = []
     this._serverDataById = []
@@ -83,6 +87,8 @@ export class ServerRegistration {
   }
 
   buildPlotInstance () {
+    const container = document.getElementById(`chart_${this.serverId}`)
+
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
@@ -101,7 +107,7 @@ export class ServerRegistration {
         })
       ],
       height: 100,
-      width: 400,
+      width: container.clientWidth || 400,
       cursor: {
         y: false,
         drag: {
@@ -163,7 +169,16 @@ export class ServerRegistration {
       legend: {
         show: false
       }
-    }, this._graphData, document.getElementById(`chart_${this.serverId}`))
+    }, this._graphData, container)
+  }
+
+  resize = () => {
+    if (!this._plotInstance) {
+      return
+    }
+
+    const container = document.getElementById(`chart_${this.serverId}`)
+    this._plotInstance.setSize({ width: container.clientWidth, height: 100 })
   }
 
   handleColorUpdate (color) {

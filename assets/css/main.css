@@ -72,7 +72,12 @@ body {
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
   font-weight: 300;
-  min-width: 800px;
+}
+
+@media only screen and (min-width: 821px) {
+  body {
+    min-width: 800px;
+  }
 }
 
 /* Page layout */
@@ -360,10 +365,6 @@ footer a:hover {
     width: 90%;
 }
 
-#big-graph-checkboxes > table {
-    width: 100%;
-}
-
 #big-graph {
   margin: 0 auto;
 }
@@ -398,6 +399,20 @@ footer a:hover {
 
 #big-graph-checkboxes {
   margin: 15px auto 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.graph-control-item {
+  display: inline-flex;
+  align-items: center;
+  margin: 4px 10px;
+  cursor: pointer;
+}
+
+.graph-control-item input {
+  margin: 0 4px;
 }
 
 .graph-color-swatch {
@@ -450,6 +465,76 @@ footer a:hover {
 
   .header-possible-row-break:last-of-type {
     margin-bottom: 20px;
+  }
+}
+
+/* Mobile server card layout */
+@media only screen and (max-width: 820px) {
+  #big-graph {
+    padding-right: 0;
+  }
+
+  #server-list {
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+
+  .server {
+    width: 100%;
+    max-width: 500px;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .server-copy-area {
+    width: 100%;
+    float: none;
+    box-sizing: border-box;
+  }
+
+  .server .column-status {
+    width: calc(100% - 80px);
+    box-sizing: border-box;
+  }
+
+  .server .column-graph {
+    float: none;
+    clear: both;
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    box-sizing: border-box;
+  }
+}
+
+/* Mobile header + status overlay */
+@media only screen and (max-width: 480px) {
+  header .logo-text {
+    font-size: 32px;
+  }
+
+  header .logo-status {
+    font-size: 16px;
+  }
+
+  #status-overlay {
+    width: 85%;
+    max-width: 350px;
+    left: 50%;
+    margin-left: 0;
+    transform: translateX(-50%);
+  }
+
+  .server .column-favicon {
+    width: 64px;
+  }
+
+  .server .column-favicon .server-favicon {
+    --fixed-server-favicon-size: 48px;
+  }
+
+  .server .column-status {
+    width: calc(100% - 64px);
   }
 }
 
