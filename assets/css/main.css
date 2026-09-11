@@ -30,6 +30,8 @@
   --color-light-purple: #a29bfe;
   --color-dark-blue: #0984e3;
   --color-light-blue: #74b9ff;
+  --color-dark-green: #00b894;
+  --color-light-green: #55efc4;
 
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
@@ -40,6 +42,7 @@
   --color-purple: var(--color-light-purple);
   --color-blue: var(--color-light-blue);
   --color-blue-inverted: var(--color-dark-blue);
+  --color-green: var(--color-light-green);
   --background-color: var(--theme-color-light);
   --text-decoration-color: var(--theme-color-dark);
   --text-color: #000;
@@ -56,6 +59,7 @@ body {
     --color-purple: var(--color-dark-purple);
     --color-blue: var(--color-dark-blue);
     --color-blue-inverted: var(--color-light-blue);
+    --color-green: var(--color-dark-green);
     --background-color: var(--theme-color-dark);
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
@@ -122,6 +126,9 @@ header .column-left {
 
 header .column-right {
   float: right;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 header .logo-image {
@@ -354,6 +361,15 @@ footer a:hover {
 /* Settings toggle */
 #settings-toggle {
   background: var(--color-blue);
+}
+
+/* Language toggle */
+#language-toggle {
+  background: var(--color-green);
+}
+
+#language-toggle:hover {
+  background: var(--background-color) !important;
 }
 
 /* Historical graph */

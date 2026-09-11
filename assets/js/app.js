@@ -5,11 +5,18 @@ import { GraphDisplayManager } from './graph'
 import { PercentageBar } from './percbar'
 import { FavoritesManager } from './favorites'
 import { Tooltip, Caption, CopyToast, formatNumber } from './util'
+import { t } from './i18n'
+
+const LOCALE_STORAGE_KEY = 'minetrack_locale'
 
 export class App {
   publicConfig
 
   constructor () {
+    this.locale = document.documentElement.lang === 'sv' ? 'sv' : 'en'
+    this.intlLocale = this.locale === 'sv' ? 'sv-SE' : 'en-GB'
+    this.t = (key, vars) => t(this.locale, key, vars)
+
     this.tooltip = new Tooltip()
     this.caption = new Caption()
     this.copyToast = new CopyToast()
@@ -25,6 +32,12 @@ export class App {
 
   // Called once the DOM is ready and the app can begin setup
   init () {
+    // Only explicit locale URLs represent a visitor's choice. The root route
+    // remains the English fallback when no preference has been stored.
+    if (window.location.pathname === '/en' || window.location.pathname === '/sv') {
+      localStorage.setItem(LOCALE_STORAGE_KEY, this.locale)
+    }
+
     this.socketManager.createWebSocket()
   }
 

@@ -134,10 +134,10 @@ export function formatMinecraftVersions (versions, knownVersions) {
   }).join(', ')
 }
 
-export function formatTimestampSeconds (secs) {
+export function formatTimestampSeconds (secs, locale = 'en-GB') {
   const date = new Date(0)
   date.setUTCSeconds(secs)
-  return date.toLocaleTimeString('en-GB', {
+  return date.toLocaleTimeString(locale, {
     hour12: false,
     hour: '2-digit',
     minute: '2-digit',
@@ -145,15 +145,15 @@ export function formatTimestampSeconds (secs) {
   })
 }
 
-export function formatDate (secs) {
+export function formatDate (secs, locale = 'en-GB') {
   const date = new Date(0)
   date.setUTCSeconds(secs)
-  return date.toLocaleDateString()
+  return date.toLocaleDateString(locale)
 }
 
-export function formatPercent (x, over) {
+export function formatPercent (x, over, locale = 'en-GB') {
   const val = Math.round((x / over) * 100 * 10) / 10
-  return `${val}%`
+  return `${val}${locale === 'sv-SE' ? ' ' : ''}%`
 }
 
 export function formatNumber (x) {

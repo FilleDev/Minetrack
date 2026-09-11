@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="{{htmlLang}}">
 
 <head>
 
@@ -9,26 +9,37 @@
 	<link rel="icon" type="image/svg+xml" href="../images/logo.svg">
 	<link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
 
-	<link rel="canonical" href="https://minetrack.nu/">
+	<link rel="canonical" href="https://minetrack.nu{{canonicalPath}}">
+	<link rel="alternate" hreflang="en" href="https://minetrack.nu/en">
+	<link rel="alternate" hreflang="sv" href="https://minetrack.nu/sv">
+	<link rel="alternate" hreflang="x-default" href="https://minetrack.nu/">
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Minetrack Sweden is a live Minecraft server tracker aiming to track player statistics for all major servers in Sweden.">
+	<meta name="description" content="{{metaDescription}}">
 
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="Minetrack Sweden">
-	<meta property="og:description" content="Minetrack Sweden is a live Minecraft server tracker aiming to track player statistics for all major servers in Sweden.">
-	<meta property="og:url" content="https://minetrack.nu/">
+	<meta property="og:title" content="{{title}}">
+	<meta property="og:description" content="{{metaDescription}}">
+	<meta property="og:url" content="{{canonicalUrl}}">
 	<meta property="og:image" content="https://minetrack.nu/og-image.png">
 
 	<meta name="twitter:card" content="summary">
-	<meta name="twitter:title" content="Minetrack Sweden">
-	<meta name="twitter:description" content="Minetrack Sweden is a live Minecraft server tracker aiming to track player statistics for all major servers in Sweden.">
+	<meta name="twitter:title" content="{{title}}">
+	<meta name="twitter:description" content="{{metaDescription}}">
 	<meta name="twitter:image" content="https://minetrack.nu/og-image.png">
+
+	<script>
+		try {
+			if (window.location.pathname === '/' && window.localStorage.getItem('minetrack_locale') === 'sv') {
+				window.location.replace('/sv')
+			}
+		} catch (err) {}
+	</script>
 
 	<script defer type="module" src="../js/main.js"></script>
 
-	<title>Minetrack Sweden</title>
+	<title>{{title}}</title>
 
 </head>
 
@@ -38,9 +49,9 @@
 	<div id="copy-toast"></div>
 
 	<div id="status-overlay">
-		<img class="logo-image" src="../images/logo.svg" alt="Minetrack Sweden logo">
-		<h1 class="logo-text">Minetrack Sweden</h1>
-		<div id="status-text">Connecting...</div>
+		<img class="logo-image" src="../images/logo.svg" alt="{{title}} logo">
+		<h1 class="logo-text">{{title}}</h1>
+		<div id="status-text">{{statusConnecting}}</div>
 	</div>
 
 	<main id="push">
@@ -49,15 +60,17 @@
 
 		<header>
 			<div class="header-possible-row-break column-left">
-				<img class="logo-image" src="../images/logo.svg" alt="Minetrack Sweden logo">
-				<h1 class="logo-text">Minetrack Sweden</h1>
-				<p class="logo-status">Tracking <span class="global-stat" id="stat_networks">live</span> Minecraft servers with <span class="global-stat" id="stat_totalPlayers">current</span> players across Sweden</p>
+				<img class="logo-image" src="../images/logo.svg" alt="{{title}} logo">
+				<h1 class="logo-text">{{title}}</h1>
+				<p class="logo-status">{{subtitle}}</p>
 			</div>
 
 			<div class="header-possible-row-break column-right">
-				<div id="sort-by" class="header-button header-button-single"><span class="icon-sort-amount-desc"></span> Sort By<br><strong id="sort-by-text">Players</strong></div>
+				<div id="sort-by" class="header-button header-button-single"><span class="icon-sort-amount-desc"></span> {{sortByLabel}}<br><strong id="sort-by-text">{{playersLabel}}</strong></div>
 
-				<div id="settings-toggle" class="header-button header-button-single" style="margin-left: 20px;"><span class="icon-gears"></span> Graph Controls</div>
+				<div id="settings-toggle" class="header-button header-button-single" style="margin-left: 20px;"><span class="icon-gears"></span> {{graphControlsLabel}}</div>
+
+				<a id="language-toggle" class="header-button" href="{{langToggleHref}}" style="margin-left: 20px; display: inline-block;"><span class="icon-globe"></span> {{switchLanguageLabel}}<br><strong>{{langToggleLabel}}</strong></a>
 			</div>
 		</header>
 
@@ -68,9 +81,9 @@
 				<div id="big-graph-checkboxes"></div>
 
 				<span class="graph-controls-setall">
-					<a minetrack-show-type="all" class="button graph-controls-show"><span class="icon-eye"></span> Show All</a>
-					<a minetrack-show-type="none" class="button graph-controls-show"><span class="icon-eye-slash"></span> Hide All</a>
-					<a minetrack-show-type="favorites" class="button graph-controls-show"><span class="icon-star"></span> Only Favorites</a>
+					<a minetrack-show-type="all" class="button graph-controls-show"><span class="icon-eye"></span> {{showAll}}</a>
+					<a minetrack-show-type="none" class="button graph-controls-show"><span class="icon-eye-slash"></span> {{hideAll}}</a>
+					<a minetrack-show-type="favorites" class="button graph-controls-show"><span class="icon-star"></span> {{onlyFavorites}}</a>
 				</span>
 			</div>
 		</div>
@@ -80,7 +93,7 @@
 	</main>
 
 	<footer id="footer">
-		<span class="icon-code"></span> Powered by <a href="https://github.com/Cryptkeeper/Minetrack">Minetrack</a> (open-source).
+		<span class="icon-code"></span> {{footerPoweredBy}}
 	</footer>
 
 </body>

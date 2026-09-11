@@ -99,7 +99,7 @@ export class ServerRegistration {
             if (typeof playerCount !== 'number') {
               this._app.tooltip.hide()
             } else {
-              this._app.tooltip.set(pos.left, pos.top, 10, 10, `${formatNumber(playerCount)} Players<br>${formatTimestampSeconds(this._graphData[0][id])}`)
+              this._app.tooltip.set(pos.left, pos.top, 10, 10, `${this._app.t('playersCount', { count: formatNumber(playerCount) })}<br>${formatTimestampSeconds(this._graphData[0][id], this._app.intlLocale)}`)
             }
           } else {
             this._app.tooltip.hide()
@@ -128,7 +128,7 @@ export class ServerRegistration {
             return this.displayStroke
           },
           width: 2,
-          value: (_, raw) => `${formatNumber(raw)} Players`,
+          value: (_, raw) => this._app.t('playersCount', { count: formatNumber(raw) }),
           spanGaps: true,
           points: {
             show: false
@@ -152,8 +152,7 @@ export class ServerRegistration {
           },
           split: () => {
             const { scaledMin, scaledMax, scale } = this.getScaledGraphRange()
-            const ticks = RelativeScale.generateTicks(scaledMin, scaledMax, scale)
-            return ticks
+            return RelativeScale.generateTicks(scaledMin, scaledMax, scale)
           }
         }
       ],
@@ -283,8 +282,11 @@ export class ServerRegistration {
     if (ping.recordData) {
       this._renderValue('record', (element) => {
         if (ping.recordData.timestamp > 0) {
-          element.innerText = `${formatNumber(ping.recordData.playerCount)} (${formatDate(ping.recordData.timestamp)})`
-          element.title = `At ${formatDate(ping.recordData.timestamp)} ${formatTimestampSeconds(ping.recordData.timestamp)}`
+          element.innerText = `${formatNumber(ping.recordData.playerCount)} (${formatDate(ping.recordData.timestamp, this._app.intlLocale)})`
+          element.title = this._app.t('atDateTime', {
+            date: formatDate(ping.recordData.timestamp, this._app.intlLocale),
+            time: formatTimestampSeconds(ping.recordData.timestamp, this._app.intlLocale)
+          })
         } else {
           element.innerText = formatNumber(ping.recordData.playerCount)
         }
@@ -296,7 +298,7 @@ export class ServerRegistration {
     if (ping.graphPeakData) {
       this._renderValue('peak', (element) => {
         element.innerText = formatNumber(ping.graphPeakData.playerCount)
-        element.title = `At ${formatTimestampSeconds(ping.graphPeakData.timestamp)}`
+        element.title = this._app.t('atTime', { time: formatTimestampSeconds(ping.graphPeakData.timestamp, this._app.intlLocale) })
       })
 
       this.lastPeakData = ping.graphPeakData
@@ -310,7 +312,7 @@ export class ServerRegistration {
 
       // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
       // In this case playerCount will safely be null, so provide a generic error message instead
-      this._renderValue('error', 'Failed to ping')
+      this._renderValue('error', this._app.t('failedToPing'))
     } else if (typeof ping.playerCount === 'number') {
       this._hideValue('error')
       this._renderValue('player-count', formatNumber(ping.playerCount))
@@ -334,7 +336,7 @@ export class ServerRegistration {
     const serverAddress = formatMinecraftServerAddress(this.data.ip, this.data.port)
 
     serverElement.id = `container_${this.serverId}`
-    serverElement.innerHTML = `<div class="server-copy-area" id="${copyAreaId}" title="Click to copy ${serverAddress}">
+    serverElement.innerHTML = `<div class="server-copy-area" id="${copyAreaId}" title="${this._app.t('clickToCopy', { address: serverAddress })}">
         <div class="column column-favicon">
           <img class="server-favicon" src="${latestPing.favicon || MISSING_FAVICON}" id="favicon_${this.serverId}" title="${this.data.name}\n${serverAddress}">
           <span class="server-rank" id="ranking_${this.serverId}"></span>
@@ -342,9 +344,9 @@ export class ServerRegistration {
         <div class="column column-status">
           <h3 class="server-name"><span class="${this._app.favoritesManager.getIconClass(this.isFavorite)}" id="favorite-toggle_${this.serverId}"></span> ${this.data.name}</h3>
           <span class="server-error" id="error_${this.serverId}"></span>
-          <span class="server-label" id="player-count_${this.serverId}">Players: <span class="server-value" id="player-count-value_${this.serverId}"></span></span>
-          <span class="server-label" id="peak_${this.serverId}">${this._app.publicConfig.graphDurationLabel} Peak: <span class="server-value" id="peak-value_${this.serverId}">-</span></span>
-          <span class="server-label" id="record_${this.serverId}">Record: <span class="server-value" id="record-value_${this.serverId}">-</span></span>
+          <span class="server-label" id="player-count_${this.serverId}">${this._app.t('playersLabel')}: <span class="server-value" id="player-count-value_${this.serverId}"></span></span>
+          <span class="server-label" id="peak_${this.serverId}">${this._app.t('peakLabel', { duration: this._app.publicConfig.graphDurationLabel })}: <span class="server-value" id="peak-value_${this.serverId}">-</span></span>
+          <span class="server-label" id="record_${this.serverId}">${this._app.t('recordLabel')}: <span class="server-value" id="record-value_${this.serverId}">-</span></span>
           <span class="server-label" id="version_${this.serverId}"></span>
         </div>
       </div>
@@ -384,7 +386,7 @@ export class ServerRegistration {
     const serverAddress = formatMinecraftServerAddress(this.data.ip, this.data.port)
     const isCopied = await copyTextToClipboard(serverAddress)
 
-    this._app.copyToast.show(targetElement, isCopied ? `Copied ${serverAddress}` : `Could not copy ${serverAddress}`)
+    this._app.copyToast.show(targetElement, this._app.t(isCopied ? 'copied' : 'couldNotCopy', { address: serverAddress }))
   }
 }
 

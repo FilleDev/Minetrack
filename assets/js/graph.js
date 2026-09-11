@@ -240,7 +240,7 @@ export class GraphDisplayManager {
           return this.displayStroke
         },
         width: 2,
-        value: (_, raw) => `${formatNumber(raw)} Players`,
+        value: (_, raw) => this._app.t('playersCount', { count: formatNumber(raw) }),
         show: serverRegistration.isVisible,
         spanGaps: true,
         points: {
@@ -285,7 +285,7 @@ export class GraphDisplayManager {
                 }
 
                 return `${serverName}: ${formatNumber(point)}`
-              }).join('<br>') + `<br><br><strong>${formatTimestampSeconds(this._graphTimestamps[idx])}</strong>`
+              }).join('<br>') + `<br><br><strong>${formatTimestampSeconds(this._graphTimestamps[idx], this._app.intlLocale)}</strong>`
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
@@ -313,14 +313,14 @@ export class GraphDisplayManager {
           space: 60,
           values: (_, ticks) => ticks.map((timestamp, index) => {
             const date = new Date(timestamp * 1000)
-            const formattedTime = date.toLocaleTimeString('en-GB', {
+            const formattedTime = date.toLocaleTimeString(this._app.intlLocale, {
               hour12: false,
               hour: '2-digit',
               minute: '2-digit'
             })
 
             if (index === 0) {
-              const formattedDate = date.toLocaleDateString('en-GB')
+              const formattedDate = date.toLocaleDateString(this._app.intlLocale)
               return `${formattedTime}\n${formattedDate}`
             }
 
@@ -338,8 +338,7 @@ export class GraphDisplayManager {
           split: () => {
             const visibleGraphData = this.getVisibleGraphData()
             const { scaledMax, scale } = RelativeScale.scaleMatrix(visibleGraphData, GRAPH_TICK_COUNT, GRAPH_MAX_FACTOR)
-            const ticks = RelativeScale.generateTicks(0, scaledMax, scale)
-            return ticks
+            return RelativeScale.generateTicks(0, scaledMax, scale)
           }
         }
       ],
