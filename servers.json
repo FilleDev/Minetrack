@@ -113,5 +113,10 @@
     "name": "Gosse",
     "ip": "gosse1337.se",
     "type": "PC"
+  },
+  {
+    "name": "Kokko SMP",
+    "ip": "kokkosmp.net",
+    "type": "PC"
   }
 ]
