@@ -118,5 +118,10 @@
     "name": "Kokko SMP",
     "ip": "kokkosmp.net",
     "type": "PC"
+  },
+  {
+    "name": "NixonMC",
+    "ip": "nixonmc.se",
+    "type": "PC"
   }
 ]
